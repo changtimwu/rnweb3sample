@@ -3,14 +3,17 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-
 import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  Button
 } from 'react-native';
+require('./globals')
+
+const Web3 = require('web3');
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -21,9 +24,25 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
+  constructor(props) {
+    super(props)
+    this.state = { blockInfo: 'not load yet' }
+  }
+
+  testweb3() {
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider('https://mainnet.infura.io/')
+    );
+    web3.eth.getBlock('latest').then((blkobj) => {
+      console.log('blkobj=', blkobj)
+      blkobj.transactions = null
+      this.setState({ blockInfo: JSON.stringify(blkobj) })
+    })
+  }
   render() {
     return (
       <View style={styles.container}>
+        <Button title='Load latest block info' onPress={() => this.testweb3()} />
         <Text style={styles.welcome}>
           Welcome to React Native!
         </Text>
@@ -32,6 +51,9 @@ export default class App extends Component<Props> {
         </Text>
         <Text style={styles.instructions}>
           {instructions}
+        </Text>
+        <Text style={styles.instructions}>
+          {this.state.blockInfo}
         </Text>
       </View>
     );
