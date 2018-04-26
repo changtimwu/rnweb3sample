@@ -11,7 +11,6 @@ import {
   View,
   Button
 } from 'react-native';
-require('./globals')
 
 const Web3 = require('web3');
 
